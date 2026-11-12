@@ -14,7 +14,12 @@ case "${1:-}" in
         "$ROOT/build/test_dsu_tree"
         ;;
     trace)
-        "$ROOT/build/dsu_trace" "$ROOT/scenarios/demo.txt" "$ROOT/build/trace.json"
-        echo "traza escrita en build/trace.json"
+        rm -rf "$ROOT/build/traces"
+        mkdir -p "$ROOT/build/traces"
+        for scenario in "$ROOT"/scenarios/*.txt; do
+            name="$(basename "$scenario" .txt)"
+            "$ROOT/build/dsu_trace" "$scenario" "$ROOT/build/traces/$name.json"
+            echo "traza: build/traces/$name.json"
+        done
         ;;
 esac
