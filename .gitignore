@@ -1,0 +1,9 @@
+build/
+media/videos/
+media/images/
+media/Tex/
+media/texts/
+__pycache__/
+*.pyc
+.venv/
+*.exe
