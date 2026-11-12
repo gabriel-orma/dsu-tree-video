@@ -6,11 +6,11 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_TRACE_DIR = PROJECT_ROOT / "build" / "traces"
 
 REQUIRED_FIELDS = {
-    "init": {"n"},
+    "init": {"n", "dsuParent", "compNode"},
     "find": {"x", "path", "root", "compressed"},
     "unite": {"a", "b", "rootA", "rootB", "merged"},
     "connected": {"a", "b", "rootA", "rootB", "answer"},
-    "query": {"a", "b", "answer", "meetNode", "climbA", "climbB"},
+    "query": {"a", "b", "answer", "meetNode", "climbA", "climbB", "steps"},
 }
 MERGED_FIELDS = {"t", "newNode", "children", "dsuChild", "dsuParent", "size"}
 

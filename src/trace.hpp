@@ -45,6 +45,19 @@ public:
             return *this;
         }
 
+        Event& field(const std::string& key, const std::vector<std::vector<int>>& rows) {
+            out_ << ", \"" << key << "\": [";
+            for (std::size_t i = 0; i < rows.size(); ++i) {
+                out_ << (i ? ", " : "") << "[";
+                for (std::size_t j = 0; j < rows[i].size(); ++j) {
+                    out_ << (j ? ", " : "") << rows[i][j];
+                }
+                out_ << "]";
+            }
+            out_ << "]";
+            return *this;
+        }
+
         std::string str() const { return out_.str() + "}"; }
 
     private:

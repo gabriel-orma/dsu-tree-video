@@ -63,7 +63,7 @@ Cada una viene del enunciado. Trátalas como criterios de aceptación.
 
 **Sobre el formato:**
 
-- [ ] Duración sugerida: **1 a 2 minutos**. **Nunca debe exceder 5 minutos.** Apunta a 1:45–2:00.
+- [ ] Duración sugerida: **1 a 2 minutos**. **Nunca debe exceder 5 minutos.** Por decisión del usuario (12 nov 2026), la claridad manda sobre la brevedad: se puede pasar de 2 minutos con ritmo pausado, apuntando a **3:30–4:15** y con margen bajo 5:00 (ver 11.1).
 - [ ] Narración permitida: voz en off, texto en pantalla, o ambos.
 - [ ] Video final en **MPEG-4 (`.mp4`)**, **alta resolución** (mínimo 1920×1080).
 - [ ] Si el `.mp4` excede el límite de tamaño de Gradescope, se incluye un **enlace** (YouTube no listado, Drive, etc.) dentro del informe.
@@ -412,6 +412,8 @@ Propón el valor por defecto indicado y espera confirmación.
 | 9 | Rúbrica | Pendiente |
 
 Preferencia del usuario: **no escribir comentarios dentro del código**; la explicación va en el README y el informe.
+
+**Duración y ritmo (decisión del usuario):** no acelerar el video para que entre en 1–2 minutos. Lo importante es que se entienda exactamente qué pasa en cada operación (cada `find`, la comparación de raíces, la unión por tamaño, el nodo nuevo, cada paso de la consulta), con calma y tiempo de lectura. El único límite duro es **5 minutos**; objetivo 3:30–4:15.
 
 ---
 

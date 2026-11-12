@@ -20,7 +20,10 @@ DSUTree::DSUTree(int n, Trace* trace) : n_(n), trace_(trace) {
     treeChildren_.assign(capacity, {kNone, kNone});
 
     if (trace_) {
-        trace_->push(Trace::Event("init").field("n", n));
+        trace_->push(Trace::Event("init")
+                         .field("n", n)
+                         .field("dsuParent", std::vector<int>(dsuParent_.begin() + 1, dsuParent_.end()))
+                         .field("compNode", std::vector<int>(compNode_.begin() + 1, compNode_.end())));
     }
 }
 
@@ -148,6 +151,7 @@ int DSUTree::whenConnected(int a, int b) const {
     std::vector<int> climbB{b};
     int u = a;
     int v = b;
+    std::vector<std::vector<int>> steps;
     int answer = 0;
     int meet = a;
 
@@ -155,6 +159,9 @@ int DSUTree::whenConnected(int a, int b) const {
         bool moveU = treeTime_[u] < treeTime_[v] || (treeTime_[u] == treeTime_[v] && u < v);
         int& side = moveU ? u : v;
         int next = treeParent_[side];
+        if (trace_) {
+            steps.push_back({u, v, side, next});
+        }
         if (next == kNone) {
             answer = kNone;
             meet = kNone;
@@ -175,7 +182,8 @@ int DSUTree::whenConnected(int a, int b) const {
                          .field("answer", answer)
                          .field("meetNode", meet)
                          .field("climbA", climbA)
-                         .field("climbB", climbB));
+                         .field("climbB", climbB)
+                         .field("steps", steps));
     }
     return answer;
 }

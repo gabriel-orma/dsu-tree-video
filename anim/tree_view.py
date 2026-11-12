@@ -87,21 +87,41 @@ class HistoryTreeView:
             spacing = theme.TREE_MAX_WIDTH / (count - 1)
         self.spacing = spacing
         self.center_slot = (count - 1) / 2
+        max_height = max(layout.height.values(), default=0)
+        available = theme.TREE_TOP - theme.TREE_BOTTOM
+        self.level_height = theme.LEVEL_HEIGHT if max_height == 0 else min(theme.LEVEL_HEIGHT, available / max_height)
+        self.bottom = theme.TREE_BOTTOM
+        if max_height * self.level_height < available:
+            self.bottom = theme.TREE_BOTTOM + (available - max_height * self.level_height) / 3
         self.nodes: dict[int, VGroup] = {}
         self.edges: dict[int, Line] = {}
         self.touched_nodes: set[int] = set()
         self.touched_edges: set[int] = set()
 
     def point(self, v: int) -> np.ndarray:
-        x = (self.layout.slot[v] - self.center_slot) * self.spacing
-        y = theme.TREE_BOTTOM + self.layout.height[v] * theme.LEVEL_HEIGHT
+        x = theme.TREE_CENTER_X + (self.layout.slot[v] - self.center_slot) * self.spacing
+        y = self.bottom + self.layout.height[v] * self.level_height
         return np.array([x, y, 0.0])
+
+    def is_leaf(self, v: int) -> bool:
+        return v <= self.layout.n
+
+    def time(self, v: int) -> int:
+        return 0 if self.is_leaf(v) else self.layout.time[v]
+
+    def name(self, v: int) -> str:
+        return f"la hoja {v}" if self.is_leaf(v) else f"el nodo t={self.layout.time[v]}"
+
+    def short(self, v: int) -> str:
+        return str(v) if self.is_leaf(v) else f"(t={self.layout.time[v]})"
 
     def make_leaf(self, v: int) -> VGroup:
         circle = Circle(radius=theme.NODE_RADIUS)
         circle.set_stroke(theme.LEAF_STROKE, width=theme.NODE_STROKE)
         circle.set_fill(theme.LEAF_FILL, opacity=theme.LEAF_FILL_OPACITY)
         label = MathTex(str(v), font_size=theme.LABEL_SIZE)
+        circle.set_z_index(1)
+        label.set_z_index(2)
         node = VGroup(circle, label).move_to(self.point(v))
         self.nodes[v] = node
         return node
@@ -114,6 +134,8 @@ class HistoryTreeView:
         label.set_color(theme.UNION_STROKE)
         if label.width > 1.6 * theme.NODE_RADIUS:
             label.scale_to_fit_width(1.6 * theme.NODE_RADIUS)
+        circle.set_z_index(1)
+        label.set_z_index(2)
         node = VGroup(circle, label).move_to(self.point(v))
         self.nodes[v] = node
         return node
@@ -138,10 +160,11 @@ class HistoryTreeView:
         self.touched_edges.add(child)
         return self.edges[child].animate.set_stroke(color, width=2 * theme.EDGE_STROKE, opacity=1)
 
-    def reset(self) -> list[Animation]:
+    def reset(self, keep: tuple[int, ...] = ()) -> list[Animation]:
+        kept = self.touched_nodes & set(keep)
         animations = [
             self.nodes[v][0].animate.set_stroke(self.base_stroke(v), width=theme.NODE_STROKE)
-            for v in sorted(self.touched_nodes)
+            for v in sorted(self.touched_nodes - kept)
         ]
         animations += [
             self.edges[c].animate.set_stroke(
@@ -149,6 +172,6 @@ class HistoryTreeView:
             )
             for c in sorted(self.touched_edges)
         ]
-        self.touched_nodes.clear()
+        self.touched_nodes = kept
         self.touched_edges.clear()
         return animations
