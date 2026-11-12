@@ -397,6 +397,22 @@ Propón el valor por defecto indicado y espera confirmación.
 8. **Límite de tamaño de Gradescope** para el video. Si se desconoce, planifica el **enlace** como respaldo.
 9. **Rúbrica de Gradescope.** Pedir que la peguen cuando esté disponible.
 
+### 11.1 Decisiones tomadas (12 nov 2026)
+
+| # | Decisión | Estado |
+|---|----------|--------|
+| 1 | C++17 (implementación) + Manim CE (animación) | Confirmado |
+| 2 | Variante A implementada; B solo como comparación opcional | Confirmado |
+| 3 | Español | Confirmado |
+| 4 | **Solo texto en pantalla, sin voz.** El texto debe estar **desacoplado**: las escenas no dependen de él y se puede desactivar con un único interruptor (por ejemplo `SHOW_CAPTIONS` en `theme.py` o una variable de entorno) sin romper nada ni cambiar el layout del árbol. | Confirmado |
+| 5 | Integrantes | **Pendiente** — usar un marcador visible en créditos e informe hasta que el usuario los dé |
+| 6 | Windows 11, Python 3.12.10 (`.venv` del proyecto), g++ 16.1.0 (MSYS2 UCRT64, enlazado `-static`), Manim CE 0.22.1, MiKTeX 25.12, ffmpeg 9.0.2 (winget `Gyan.FFmpeg`), CMU Serif instalada desde el paquete MiKTeX `cm-unicode`. No hay `make`: usar `scripts/build.sh`. | Verificado |
+| 7 | Editor: **DaVinci Resolve**. Música: pendiente (con licencia clara) | Parcial |
+| 8 | Límite de Gradescope | Pendiente — planificar enlace como respaldo |
+| 9 | Rúbrica | Pendiente |
+
+Preferencia del usuario: **no escribir comentarios dentro del código**; la explicación va en el README y el informe.
+
 ---
 
 ## 12. Advertencias finales
