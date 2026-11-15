@@ -66,7 +66,7 @@ class TreePlayer(Narrator):
             run_time=self.rt(1.4),
         )
 
-    def grow(self, event: dict, caption: str | None = None, pre_caption: str | None = None) -> None:
+    def grow(self, event: dict, caption: str | None = None, pre_caption: str | None = None, extra=()) -> None:
         left, right = event["children"]
         new_node = event["newNode"]
         self.play(
@@ -78,16 +78,17 @@ class TreePlayer(Narrator):
         node = self.view.make_union(new_node)
         ghost = VGroup(self.view.nodes[left][0].copy(), self.view.nodes[right][0].copy())
         edges = [self.view.make_edge(c, new_node) for c in (left, right)]
-        self.play(ReplacementTransform(ghost, node), caption=caption, run_time=self.rt(theme.RUN))
+        self.play(ReplacementTransform(ghost, node), *extra, caption=caption, run_time=self.rt(theme.RUN))
         self.play(*[Create(edge) for edge in edges], *self.view.reset(), run_time=self.rt(theme.FAST))
 
-    def reject(self, event: dict, caption: str | None = None) -> None:
+    def reject(self, event: dict, caption: str | None = None, extra=()) -> None:
         a, b = event["a"], event["b"]
         self.play(
             self.view.highlight(a, theme.QUERY),
             self.view.highlight(b, theme.QUERY),
             self.view.highlight(event["node"], theme.QUERY),
             Circumscribe(self.view.nodes[event["node"]], color=theme.QUERY),
+            *extra,
             caption=caption,
             color=theme.QUERY,
             run_time=self.rt(theme.RUN),

@@ -6,7 +6,9 @@ from manim import (
     FadeIn,
     FadeOut,
     GrowFromCenter,
+    Indicate,
     LaggedStart,
+    Line,
     MathTex,
     RoundedRectangle,
     Scene,
@@ -275,15 +277,54 @@ class Grande(Scene):
     def construct(self):
         self.camera.background_color = theme.BACKGROUND
         events = load_trace("grande")
-        layout = history_layout(events)
+        n = events[0]["n"]
+        islands = IslandsView(n, bounds=(-6.7, -1.0, -3.0, 2.3), radius=0.24, min_gap=0.9)
         view = HistoryTreeView(
-            layout,
-            TreeBox(center_x=0, max_width=12.2, bottom=-3.1, top=2.4, spacing=1.1, radius=0.34, label_size=24, union_label_size=22),
+            history_layout(events),
+            TreeBox(
+                center_x=3.2,
+                max_width=6.9,
+                bottom=-3.0,
+                top=2.3,
+                spacing=0.65,
+                radius=0.27,
+                time_only=True,
+                label_size=22,
+                union_label_size=24,
+            ),
         )
-        player = TreePlayer(self, view, Captions(), speed=0.4)
-        player.say("Ahora el ejemplo de las islas completo, sin pausas")
-        player.show_leaves()
-        player.run_quiet(events)
+        player = TreePlayer(self, view, Captions(), speed=0.5)
+        divider = Line(np.array([-0.55, -3.3, 0]), np.array([-0.55, 2.6, 0])).set_stroke(theme.SECONDARY, width=1.5)
+        legend = VGroup(
+            Text("islas (DSU)", font_size=22, color=theme.ISLAND_COLOR).move_to(np.array([-3.85, 2.75, 0])),
+            Text("árbol de historia (t en amarillo)", font_size=22, color=theme.UNION_STROKE).move_to(np.array([3.2, 2.75, 0])),
+        )
+        leaves = view.leaves()
+        player.play(
+            LaggedStart(*[GrowFromCenter(islands.balls[x]) for x in range(1, n + 1)], lag_ratio=0.06),
+            LaggedStart(*[GrowFromCenter(leaf) for leaf in leaves], lag_ratio=0.06),
+            FadeIn(divider),
+            FadeIn(legend),
+            caption="Aplicando esto al ejemplo inicial de las islas:",
+            run_time=1.6,
+        )
+        for event in events:
+            if event["op"] == "unite" and event["merged"]:
+                player.grow(event, extra=islands.apply_components(event["comp"]))
+            elif event["op"] == "unite":
+                a, b = event["a"], event["b"]
+                player.reject(
+                    event,
+                    caption=f"unite({a}, {b}): ya estaban en la misma isla",
+                    extra=[Indicate(islands.balls[a], color=theme.QUERY), Indicate(islands.balls[b], color=theme.QUERY)],
+                )
+            elif event["op"] == "query":
+                a, b, answer = event["a"], event["b"], event["answer"]
+                player.query(
+                    event,
+                    caption=f"whenConnected({a}, {b})",
+                    answer_caption=f"whenConnected({a}, {b}) = {answer}",
+                )
         player.play(*player.captions.clear(), run_time=theme.FAST)
         self.wait(1.2)
         clear_scene(self)

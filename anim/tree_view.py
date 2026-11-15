@@ -90,6 +90,7 @@ class TreeBox:
     level: float = 1.3
     radius: float = theme.NODE_RADIUS
     show_ids: bool = False
+    time_only: bool = False
     label_size: int = theme.LABEL_SIZE
     union_label_size: int = theme.UNION_LABEL_SIZE
     extra: dict = field(default_factory=dict)
@@ -154,6 +155,8 @@ class HistoryTreeView:
         circle.set_fill(theme.BACKGROUND, opacity=1)
         if self.box.show_ids:
             label = MathTex(str(v), font_size=self.box.label_size)
+        elif self.box.time_only:
+            label = MathTex(str(self.layout.time[v]), font_size=self.box.union_label_size, color=theme.UNION_STROKE)
         else:
             label = MathTex(f"t{{=}}{self.layout.time[v]}", font_size=self.box.union_label_size)
             label.set_color(theme.UNION_STROKE)

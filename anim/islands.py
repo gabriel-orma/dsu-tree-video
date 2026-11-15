@@ -27,18 +27,18 @@ def scatter_positions(n: int, bounds: tuple[float, float, float, float], seed: i
     return points
 
 
-def ball(label: int) -> VGroup:
-    circle = Circle(radius=theme.BALL_RADIUS)
+def ball(label: int, radius: float = theme.BALL_RADIUS) -> VGroup:
+    circle = Circle(radius=radius)
     circle.set_stroke(theme.LEAF_STROKE, width=3)
     circle.set_fill(theme.LEAF_FILL, opacity=theme.LEAF_FILL_OPACITY)
-    text = MathTex(str(label), font_size=26)
+    text = MathTex(str(label), font_size=round(26 * radius / theme.BALL_RADIUS))
     circle.set_z_index(3)
     text.set_z_index(4)
     return VGroup(circle, text)
 
 
-def packed_offsets(count: int) -> list[np.ndarray]:
-    spacing = 2 * theme.BALL_RADIUS + 0.1
+def packed_offsets(count: int, radius: float = theme.BALL_RADIUS) -> list[np.ndarray]:
+    spacing = 2 * radius + 0.1
     offsets = [np.zeros(3)]
     ring = 1
     while len(offsets) < count:
@@ -51,21 +51,28 @@ def packed_offsets(count: int) -> list[np.ndarray]:
 
 
 class IslandsView:
-    def __init__(self, n: int, bounds=(-6.2, 6.2, -2.7, 2.3), seed: int = 11):
+    def __init__(
+        self,
+        n: int,
+        bounds=(-6.2, 6.2, -2.7, 2.3),
+        seed: int = 11,
+        radius: float = theme.BALL_RADIUS,
+        min_gap: float = 1.15,
+    ):
         self.n = n
         self.bounds = bounds
-        start = scatter_positions(n, bounds, seed, 1.15)
+        self.radius = radius
+        start = scatter_positions(n, bounds, seed, min_gap)
         self.pos = {x: start[x - 1] for x in range(1, n + 1)}
-        self.balls = {x: ball(x).move_to(self.pos[x]) for x in range(1, n + 1)}
+        self.balls = {x: ball(x, radius).move_to(self.pos[x]) for x in range(1, n + 1)}
         self.groups: dict[frozenset, np.ndarray] = {frozenset([x]): self.pos[x].copy() for x in range(1, n + 1)}
         self.blobs: dict[frozenset, Circle] = {}
 
-    @staticmethod
-    def radius_for(size: int) -> float:
+    def radius_for(self, size: int) -> float:
         if size == 1:
-            return theme.BALL_RADIUS
-        reach = max(np.linalg.norm(o) for o in packed_offsets(size))
-        return reach + theme.BALL_RADIUS + 0.2
+            return self.radius
+        reach = max(np.linalg.norm(o) for o in packed_offsets(size, self.radius))
+        return reach + self.radius + 0.2
 
     def blob(self, members: frozenset, center: np.ndarray) -> Circle:
         shape = Circle(radius=self.radius_for(len(members)))
@@ -123,7 +130,7 @@ class IslandsView:
         animations: list[Animation] = []
         for group, center in centers.items():
             ordered = sorted(group)
-            for x, offset in zip(ordered, packed_offsets(len(ordered))):
+            for x, offset in zip(ordered, packed_offsets(len(ordered), self.radius)):
                 target = center + offset
                 if np.linalg.norm(target - self.pos[x]) > 1e-3:
                     animations.append(self.balls[x].animate.move_to(target))
