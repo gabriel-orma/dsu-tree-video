@@ -149,6 +149,12 @@ class IslandsView:
         self.groups = centers
         return animations
 
+    def blob_of(self, x: int):
+        for group, shape in self.blobs.items():
+            if x in group:
+                return shape
+        return None
+
     def all_balls(self) -> VGroup:
         return VGroup(*[self.balls[x] for x in range(1, self.n + 1)])
 

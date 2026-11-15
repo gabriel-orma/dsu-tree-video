@@ -134,14 +134,14 @@ class StepPlayer(Narrator):
         tag = self.view.make_tag(v)
         edges = self.grow_node(
             event,
-            f"nace el nodo {v} = n + t encima de ambos, con t[{v}] = {t} e hijos {left} y {right};\n" + f"padreÁrbol[{left}] = padreÁrbol[{right}] = {v}",
+            f"nace el nodo #{v} = n + t encima de ambos, con t[{v}] = {t} e hijos {left} y {right};\n" + f"padreÁrbol[{left}] = padreÁrbol[{right}] = {v}",
             FadeIn(tag),
             *self.memory.update(["padreArbol", "tiempo", "hijoIzq", "hijoDer"], event),
         )
         self.play(*[Create(edge) for edge in edges], run_time=theme.FAST)
         self.play(
             *self.memory.update(["padre", "tam", "nodo"], event),
-            caption=f"unión por tamaño (tam {size_a} y {size_b}): padre[{child}] = {parent}, tam[{parent}] = {event['size']};\nnodo[{parent}] = {v}: ahora el nodo {v} representa a toda la componente",
+            caption=f"unión por tamaño (tam {size_a} y {size_b}): padre[{child}] = {parent}, tam[{parent}] = {event['size']};\nnodo[{parent}] = {v}: ahora el nodo #{v} representa a toda la componente",
         )
         self.play(*self.reset_all(), run_time=theme.FAST)
 
@@ -153,7 +153,7 @@ class StepPlayer(Narrator):
         size_b = self.state["tam"][event["rootB"] - 1]
         edges = self.grow_node(
             event,
-            f"unite({event['a']}, {event['b']}): raíces {event['rootA']} y {event['rootB']} → nace el nodo {v} con t = {t}",
+            f"unite({event['a']}, {event['b']}): raíces {event['rootA']} y {event['rootB']} → nace el nodo #{v} con t = {t}",
             *self.memory.update(["padreArbol", "tiempo", "hijoIzq", "hijoDer"], event),
         )
         tag = self.view.make_tag(v)
@@ -243,7 +243,7 @@ class StepPlayer(Narrator):
             )
         else:
             meet = event["meetNode"]
-            reached = f"u = v = {meet}: " if event["steps"] else f"u = v desde el inicio: "
+            reached = f"u = v = #{meet}: " if event["steps"] else f"u = v desde el inicio: "
             self.play(
                 *self.memory.reset({"tiempo": {meet}}),
                 self.view.highlight(meet, theme.ANSWER),

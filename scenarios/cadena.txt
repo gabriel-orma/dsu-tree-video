@@ -3,4 +3,3 @@ unite 1 2
 unite 2 3
 unite 3 4
 unite 4 5
-query 1 5

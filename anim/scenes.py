@@ -258,14 +258,14 @@ class PasoAPaso(Scene):
             memory.rows["padre"].appear(),
             memory.rows["tam"].appear(),
             memory.rows["nodo"].appear(),
-            caption="Los vectores de la implementación. DSU auxiliar: padre[x] y tam[x] como siempre;\nnodo[x] = qué nodo del árbol representa a la componente (vale en las raíces)",
+            caption="DSU auxiliar: padre[x] y tam[x], como siempre;\nnodo[x] = el nodo del árbol que representa a la componente (en las raíces)",
             run_time=1.4,
         )
         step.play(
             FadeIn(memory.tree_title),
             *[row.appear() for row in memory.tree_group()],
             step.leaves_animation(),
-            caption=f"árbol de historia, 2n − 1 = {memory.slots} casillas (las hojas 1 … n ya existen): padreÁrbol[v] = padre de v,\n" + "t[v] = momento en que nació v, hijoIzq[v] e hijoDer[v] = los nodos que unió",
+            caption=f"árbol de historia ({memory.slots} casillas): padreÁrbol[v] = padre de v,\n" + "t[v] = momento en que nació v; hijoIzq, hijoDer = los nodos que unió",
             run_time=1.4,
         )
         step.run(events)
@@ -308,6 +308,7 @@ class Grande(Scene):
             caption="Aplicando esto al ejemplo inicial de las islas:",
             run_time=1.6,
         )
+        asked_connected = False
         for event in events:
             if event["op"] == "unite" and event["merged"]:
                 player.grow(event, extra=islands.apply_components(event["comp"]))
@@ -318,11 +319,14 @@ class Grande(Scene):
                     caption=f"unite({a}, {b}): ya estaban en la misma isla",
                     extra=[Indicate(islands.balls[a], color=theme.QUERY), Indicate(islands.balls[b], color=theme.QUERY)],
                 )
+            elif event["op"] == "connected":
+                self.show_connected(player, islands, event, first=not asked_connected)
+                asked_connected = True
             elif event["op"] == "query":
                 a, b, answer = event["a"], event["b"], event["answer"]
                 player.query(
                     event,
-                    caption=f"whenConnected({a}, {b})",
+                    caption=f"whenConnected({a}, {b}): ¿desde cuándo? Eso lo responde el árbol",
                     answer_caption=f"whenConnected({a}, {b}) = {answer}",
                 )
         player.play(*player.captions.clear(), run_time=theme.FAST)
@@ -330,16 +334,45 @@ class Grande(Scene):
         clear_scene(self)
 
 
+    def show_connected(self, player: TreePlayer, islands: IslandsView, event: dict, first: bool) -> None:
+        a, b, answer = event["a"], event["b"], event["answer"]
+        color = theme.ANSWER if answer else theme.QUERY
+        if answer:
+            verdict = f"connected({a}, {b}) = sí: misma isla (raíz {event['rootA']})"
+        else:
+            verdict = f"connected({a}, {b}) = no: islas distintas (raíces {event['rootA']} y {event['rootB']})"
+        if first:
+            verdict = verdict + " (lo responde el DSU)"
+        shapes = []
+        for x in (a, b):
+            shape = islands.blob_of(x)
+            if shape is not None and shape not in shapes:
+                shapes.append(shape)
+        player.play(
+            *[islands.balls[x][0].animate.set_stroke(color, width=6) for x in (a, b)],
+            *[shape.animate.set_stroke(color, width=5) for shape in shapes],
+            caption=verdict,
+            color=color,
+            run_time=1.2,
+        )
+        self.wait(0.3)
+        player.play(
+            *[shape.animate.set_stroke(theme.ISLAND_COLOR, width=2.5) for shape in shapes],
+            *[islands.balls[x][0].animate.set_stroke(theme.LEAF_STROKE, width=3) for x in (a, b)],
+            run_time=0.5,
+        )
+
+
 class Complejidad(Scene):
     def construct(self):
         self.camera.background_color = theme.BACKGROUND
         events = load_trace("cadena")
-        view = HistoryTreeView(history_layout(events), TreeBox(center_x=0, bottom=-2.8, top=2.2, spacing=1.6))
+        view = HistoryTreeView(history_layout(events), TreeBox(center_x=0, bottom=-3.0, top=1.6, spacing=1.6))
         player = TreePlayer(self, view, Captions(), speed=0.35)
         player.say("Peor caso para la consulta: una cadena de uniones", color=theme.QUERY)
         player.show_leaves()
         player.run_quiet(events)
-        player.say("la altura llega a n − 1, así que whenConnected puede subir O(n) nodos", color=theme.QUERY)
+        player.say("la altura llega a n − 1: subir desde la hoja más baja hasta la raíz\ncuesta O(n) pasos en whenConnected", color=theme.QUERY)
         clear_scene(self)
 
         title = heading("Complejidad")

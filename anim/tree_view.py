@@ -90,7 +90,7 @@ class TreeBox:
     level: float = 1.3
     radius: float = theme.NODE_RADIUS
     show_ids: bool = False
-    time_only: bool = False
+    time_only: bool = True
     label_size: int = theme.LABEL_SIZE
     union_label_size: int = theme.UNION_LABEL_SIZE
     extra: dict = field(default_factory=dict)
@@ -153,9 +153,7 @@ class HistoryTreeView:
         circle = Circle(radius=self.radius)
         circle.set_stroke(theme.UNION_STROKE, width=theme.NODE_STROKE)
         circle.set_fill(theme.BACKGROUND, opacity=1)
-        if self.box.show_ids:
-            label = MathTex(str(v), font_size=self.box.label_size)
-        elif self.box.time_only:
+        if self.box.time_only or self.box.show_ids:
             label = MathTex(str(self.layout.time[v]), font_size=self.box.union_label_size, color=theme.UNION_STROKE)
         else:
             label = MathTex(f"t{{=}}{self.layout.time[v]}", font_size=self.box.union_label_size)
@@ -169,7 +167,7 @@ class HistoryTreeView:
         return node
 
     def make_tag(self, v: int) -> MathTex:
-        tag = MathTex(f"t{{=}}{self.layout.time[v]}", font_size=self.box.union_label_size, color=theme.UNION_STROKE)
+        tag = MathTex(rf"\#{v}", font_size=self.box.union_label_size, color=theme.SECONDARY)
         tag.next_to(self.point(v), RIGHT, buff=self.radius + 0.08)
         tag.set_z_index(2)
         self.tags[v] = tag
