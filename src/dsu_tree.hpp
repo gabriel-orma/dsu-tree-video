@@ -28,6 +28,8 @@ public:
 
 private:
     int find(int x);
+    int rootOf(int x) const;
+    void addState(Trace::Event& event) const;
     void checkLeaf(int x) const;
 
     int n_;

@@ -20,11 +20,44 @@ DSUTree::DSUTree(int n, Trace* trace) : n_(n), trace_(trace) {
     treeChildren_.assign(capacity, {kNone, kNone});
 
     if (trace_) {
-        trace_->push(Trace::Event("init")
-                         .field("n", n)
-                         .field("dsuParent", std::vector<int>(dsuParent_.begin() + 1, dsuParent_.end()))
-                         .field("compNode", std::vector<int>(compNode_.begin() + 1, compNode_.end())));
+        Trace::Event event("init");
+        event.field("n", n);
+        addState(event);
+        trace_->push(event);
     }
+}
+
+int DSUTree::rootOf(int x) const {
+    while (dsuParent_[x] != x) {
+        x = dsuParent_[x];
+    }
+    return x;
+}
+
+void DSUTree::addState(Trace::Event& event) const {
+    std::vector<int> parent, size, node, comp;
+    for (int x = 1; x <= n_; ++x) {
+        parent.push_back(dsuParent_[x]);
+        size.push_back(dsuSize_[x]);
+        node.push_back(compNode_[x]);
+        comp.push_back(rootOf(x));
+    }
+    std::vector<int> treeParent, treeTime, left, right;
+    for (int v = 1; v < 2 * n_; ++v) {
+        treeParent.push_back(treeParent_[v]);
+        treeTime.push_back(treeTime_[v]);
+        left.push_back(treeChildren_[v].first);
+        right.push_back(treeChildren_[v].second);
+    }
+    event.field("padre", parent)
+        .field("tam", size)
+        .field("nodo", node)
+        .field("comp", comp)
+        .field("padreArbol", treeParent)
+        .field("tiempo", treeTime)
+        .field("hijoIzq", left)
+        .field("hijoDer", right)
+        .field("nodos", n_ + unions_);
 }
 
 void DSUTree::checkLeaf(int x) const {
@@ -57,11 +90,10 @@ int DSUTree::find(int x) {
     }
 
     if (trace_) {
-        trace_->push(Trace::Event("find")
-                         .field("x", path.front())
-                         .field("path", path)
-                         .field("root", root)
-                         .field("compressed", compressed));
+        Trace::Event event("find");
+        event.field("x", path.front()).field("path", path).field("root", root).field("compressed", compressed);
+        addState(event);
+        trace_->push(event);
     }
     return root;
 }
@@ -79,14 +111,16 @@ bool DSUTree::unite(int a, int b) {
 
     if (rootA == rootB) {
         if (trace_) {
-            trace_->push(Trace::Event("unite")
-                             .field("a", a)
-                             .field("b", b)
-                             .field("rootA", rootA)
-                             .field("rootB", rootB)
-                             .field("merged", false)
-                             .field("reason", "ya conectados")
-                             .field("node", compNode_[rootA]));
+            Trace::Event event("unite");
+            event.field("a", a)
+                .field("b", b)
+                .field("rootA", rootA)
+                .field("rootB", rootB)
+                .field("merged", false)
+                .field("reason", "ya conectados")
+                .field("node", compNode_[rootA]);
+            addState(event);
+            trace_->push(event);
         }
         return false;
     }
@@ -111,18 +145,20 @@ bool DSUTree::unite(int a, int b) {
     compNode_[big] = newNode;
 
     if (trace_) {
-        trace_->push(Trace::Event("unite")
-                         .field("a", a)
-                         .field("b", b)
-                         .field("t", t)
-                         .field("rootA", rootA)
-                         .field("rootB", rootB)
-                         .field("merged", true)
-                         .field("dsuChild", small)
-                         .field("dsuParent", big)
-                         .field("size", dsuSize_[big])
-                         .field("newNode", newNode)
-                         .field("children", std::vector<int>{nodeA, nodeB}));
+        Trace::Event event("unite");
+        event.field("a", a)
+            .field("b", b)
+            .field("t", t)
+            .field("rootA", rootA)
+            .field("rootB", rootB)
+            .field("merged", true)
+            .field("dsuChild", small)
+            .field("dsuParent", big)
+            .field("size", dsuSize_[big])
+            .field("newNode", newNode)
+            .field("children", std::vector<int>{nodeA, nodeB});
+        addState(event);
+        trace_->push(event);
     }
     return true;
 }

@@ -5,10 +5,12 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_TRACE_DIR = PROJECT_ROOT / "build" / "traces"
 
+STATE_FIELDS = {"padre", "tam", "nodo", "comp", "padreArbol", "tiempo", "hijoIzq", "hijoDer", "nodos"}
+
 REQUIRED_FIELDS = {
-    "init": {"n", "dsuParent", "compNode"},
-    "find": {"x", "path", "root", "compressed"},
-    "unite": {"a", "b", "rootA", "rootB", "merged"},
+    "init": {"n"} | STATE_FIELDS,
+    "find": {"x", "path", "root", "compressed"} | STATE_FIELDS,
+    "unite": {"a", "b", "rootA", "rootB", "merged"} | STATE_FIELDS,
     "connected": {"a", "b", "rootA", "rootB", "answer"},
     "query": {"a", "b", "answer", "meetNode", "climbA", "climbB", "steps"},
 }

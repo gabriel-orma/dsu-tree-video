@@ -1,0 +1,8 @@
+init 5
+unite 1 2
+unite 3 4
+unite 2 4
+unite 1 4
+query 1 4
+query 2 5
+unite 5 2

@@ -1,0 +1,5 @@
+init 4
+unite 1 2
+unite 3 4
+unite 2 3
+query 1 4

@@ -1,0 +1,15 @@
+init 12
+unite 1 5
+unite 2 8
+unite 3 12
+unite 4 6
+unite 5 9
+unite 8 11
+unite 7 10
+unite 9 2
+unite 6 3
+unite 11 5
+unite 10 4
+unite 12 1
+query 1 11
+query 7 12

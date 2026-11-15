@@ -3,7 +3,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 QUALITY="${QUALITY:-l}"
-ALL_SCENES=(Titulo Concepto Tuberia Demo PeorCaso Complejidad Creditos)
+ALL_SCENES=(Gancho Titulo Pregunta TDA PasoAPaso Grande Complejidad Creditos)
 
 if [ -x "$ROOT/.venv/Scripts/python.exe" ]; then
     PY="$ROOT/.venv/Scripts/python.exe"
