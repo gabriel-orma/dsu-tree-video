@@ -8,4 +8,4 @@ __pycache__/
 .venv/
 *.exe
 media/*.mp4
-assets/musica.*
+assets/

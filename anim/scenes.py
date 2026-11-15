@@ -421,13 +421,7 @@ class Creditos(Scene):
             Text("CS2023 Algoritmos y Estructuras de Datos · UTEC 2026-2", font_size=22, color=theme.SECONDARY),
             Text("Prof. Wilder Nina Choquehuayta", font_size=22, color=theme.SECONDARY),
             Text("Animación con Manim Community Edition · estilo inspirado en 3Blue1Brown", font_size=22, color=theme.SECONDARY),
-        )
-        music_file = PROJECT_ROOT / "anim" / "musica.txt"
-        if music_file.exists():
-            for line in music_file.read_text(encoding="utf-8").splitlines():
-                if line.strip():
-                    info.add(Text(line.strip(), font_size=22, color=theme.SECONDARY))
-        info.arrange(DOWN, buff=0.15)
+        ).arrange(DOWN, buff=0.15)
         block = VGroup(title, team_label, team, info).arrange(DOWN, buff=0.45)
         self.play(Write(title), run_time=1.2)
         self.play(FadeIn(team_label), LaggedStart(*[FadeIn(m, shift=UP * 0.1) for m in team], lag_ratio=0.3), run_time=1.5)
