@@ -407,7 +407,7 @@ Propón el valor por defecto indicado y espera confirmación.
 | 4 | **Solo texto en pantalla, sin voz.** El texto debe estar **desacoplado**: las escenas no dependen de él y se puede desactivar con un único interruptor (por ejemplo `SHOW_CAPTIONS` en `theme.py` o una variable de entorno) sin romper nada ni cambiar el layout del árbol. | Confirmado |
 | 5 | Integrantes | **Pendiente** — usar un marcador visible en créditos e informe hasta que el usuario los dé |
 | 6 | Windows 11, Python 3.12.10 (`.venv` del proyecto), g++ 16.1.0 (MSYS2 UCRT64, enlazado `-static`), Manim CE 0.22.1, MiKTeX 25.12, ffmpeg 9.0.2 (winget `Gyan.FFmpeg`), CMU Serif instalada desde el paquete MiKTeX `cm-unicode`. No hay `make`: usar `scripts/build.sh`. | Verificado |
-| 7 | Editor: **DaVinci Resolve**. Música: pendiente (con licencia clara) | Parcial |
+| 7 | Editor: **DaVinci Resolve**. Música: el usuario decidió (15 nov 2026) usar «Zeta» de Vincent Rubinetti (3Blue1Brown) por ser un video educativo, sin fines de lucro y solo para el profesor, aceptando que no hay licencia ni permiso explícito. El usuario aporta el archivo en `assets/musica.*` (no se versiona) y `render.sh` lo mezcla; crédito en `anim/musica.txt`. Citarla en el informe. | Decidido por el usuario |
 | 8 | Límite de Gradescope | Pendiente — planificar enlace como respaldo |
 | 9 | Rúbrica | Pendiente |
 

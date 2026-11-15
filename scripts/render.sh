@@ -69,4 +69,25 @@ if [ "$JOIN" -eq 1 ]; then
     OUT="$ROOT/media/dsu_tree_$FOLDER.mp4"
     "$FFMPEG" -v error -y -f concat -safe 0 -i "$(native_path "$LIST")" -c copy "$(native_path "$OUT")"
     echo "video completo: $OUT"
+
+    MUSIC=""
+    for candidate in "$ROOT"/assets/musica.{mp3,m4a,wav,ogg,flac,opus}; do
+        if [ -f "$candidate" ]; then
+            MUSIC="$candidate"
+            break
+        fi
+    done
+    if [ -n "$MUSIC" ]; then
+        FFPROBE="$(dirname "$FFMPEG")/ffprobe"
+        DURATION="$("$FFPROBE" -v error -show_entries format=duration -of csv=p=0 "$(native_path "$OUT")")"
+        FADE_START="$(awk -v d="$DURATION" 'BEGIN { printf "%.2f", (d > 4 ? d - 4 : 0) }')"
+        WITH_MUSIC="$ROOT/media/dsu_tree_${FOLDER}_musica.mp4"
+        "$FFMPEG" -v error -y \
+            -i "$(native_path "$OUT")" \
+            -stream_loop -1 -i "$(native_path "$MUSIC")" \
+            -filter_complex "[1:a]volume=${MUSIC_VOLUME:-0.25},afade=t=in:st=0:d=2,afade=t=out:st=${FADE_START}:d=4[a]" \
+            -map 0:v -map "[a]" -c:v copy -c:a aac -b:a 192k -shortest \
+            "$(native_path "$WITH_MUSIC")"
+        echo "video con música: $WITH_MUSIC"
+    fi
 fi
