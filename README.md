@@ -4,8 +4,8 @@ Proyecto Final 2 de CS2023 Algoritmos y Estructuras de Datos (UTEC, 2026-2), Gru
 
 Video educativo, al estilo de Manim, que explica y demuestra el **DSU Tree**: un DSU que guarda la historia de sus uniones en un árbol y puede responder **en qué momento** dos elementos quedaron en el mismo grupo.
 
-- **Video:** (se agregará el enlace de YouTube)
-- **Informe:** [`report/Informe_Grupo14_DSU_Tree.docx`](report/Informe_Grupo14_DSU_Tree.docx)
+- **Video:** https://www.youtube.com/watch?v=iYJlmo8y9Ao
+- **Informe:** [`report/Informe_Grupo14_DSU_Tree.pdf`](report/Informe_Grupo14_DSU_Tree.pdf) (versión editable: [`report/Informe_Grupo14_DSU_Tree.docx`](report/Informe_Grupo14_DSU_Tree.docx))
 - **Integrantes:** Ormachea Mamani Gabriel, Sanchez Echevarria Andre Gianfranco
 - **Profesor:** Wilder Nina Choquehuayta
 
